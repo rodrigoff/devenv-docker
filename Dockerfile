@@ -44,34 +44,22 @@ USER docker
 ENV HOME=/home/docker
 ENV USER=docker
 
-
-
 # zsh + prezto
 RUN sudo yum install -y zsh && \
   git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
-
 
 COPY tmp-scripts /tmp/scripts
 RUN sudo  chmod +x /tmp/scripts/prezto && \
   zsh /tmp/scripts/prezto
 
-# Install .NET Core SDK
-# RUN rpm -Uvh https://packages.microsoft.com/config/rhel/7/packages-microsoft-prod.rpm && \
-#   yum update && \
-#   yum install libunwind libicu && \
-#   yum install dotnet-sdk-2.1.200
+# vim + vimrc
+RUN sudo yum install -y vim && \
+  git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime && \
+  sh ~/.vim_runtime/install_awesome_vimrc.sh
 
 # Add all our config files
 COPY home $HOME
 RUN sudo chown -R docker:docker $HOME/
 
-# # Fix all permissions
-# ENTRYPOINT ["/bin/bash", "--login"]
-# CMD ["/usr/local/bin/entrypoint.sh"]
-# VOLUME /home/docker
-
-# COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-# COPY versions.sh /usr/local/bin/versions.sh
-# RUN /bin/bash --login -c "/usr/local/bin/versions.sh | sudo dd of=/.devenv-versions"
 ENV SHELL /bin/zsh
 CMD ["zsh", "--version"]
