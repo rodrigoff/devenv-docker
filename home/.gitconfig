@@ -1,0 +1,9 @@
+[core]
+  autocrlf = true
+  editor = vim
+
+[user]
+  name = Rodrigo F. Fernandes
+
+[fetch]
+  prune = true
