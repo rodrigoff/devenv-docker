@@ -1,10 +1,21 @@
 FROM debian:stretch-slim
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND noninteractive
+ENV TERM xterm-256color
 
-RUN apt-get update && \
-  # basic utilities
-  apt-get install -y software-properties-common git wget
+RUN apt-get update
+
+# basic utilities
+RUN apt-get install -y \
+  software-properties-common \
+  git \
+  wget
+
+## gui stuff
+RUN apt-get install -y \
+  libfreetype6 \
+  libxrender1 \
+  libxtst6
 
 # zsh + prezto
 RUN apt-get install -y zsh && \
@@ -20,6 +31,10 @@ RUN apt-get install -y vim && \
   git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime && \
   sh ~/.vim_runtime/install_awesome_vimrc.sh
 
+# language
+RUN echo 'export LC_ALL=en_US.UTF-8' >> /root/.zshrc && \
+  echo 'export LANG=en_US.UTF-8' >> /root/.zshrc
+
 # docker
 RUN apt-get install -y apt-transport-https ca-certificates curl gnupg2 && \
   curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
@@ -34,3 +49,15 @@ RUN apt-get install -y apt-transport-https ca-certificates curl gnupg2 && \
 RUN useradd user && usermod -aG sudo user
 RUN mkdir /home/user && chown -R user /home/user
 RUN echo 'user ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+# ssh x11 forwarding
+RUN apt-get install -y openssh-server xauth && \
+  mkdir /var/run/sshd && \
+  sed -i "s/^.*PasswordAuthentication.*$/PasswordAuthentication no/" /etc/ssh/sshd_config && \
+  sed -i "s/^.*X11Forwarding.*$/X11Forwarding yes/" /etc/ssh/sshd_config && \
+  sed -i "s/^.*X11UseLocalhost.*$/X11UseLocalhost no/" /etc/ssh/sshd_config && \
+  sed -i "s/^.*PermitRootLogin.*$/PermitRootLogin yes/" /etc/ssh/sshd_config && \
+  grep "^X11UseLocalhost" /etc/ssh/sshd_config || echo "X11UseLocalhost no" >> /etc/ssh/sshd_
+
+EXPOSE 22
+ENTRYPOINT service ssh restart && zsh
