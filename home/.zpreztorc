@@ -15,4 +15,3 @@ zstyle ':prezto:load' pmodule \
   'fasd'
 
 zstyle ':prezto:module:prompt' theme 'kylewest'
-zstyle ':prezto:module:tmux:auto-start' local 'yes'
