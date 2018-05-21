@@ -14,4 +14,4 @@ zstyle ':prezto:load' pmodule \
   'docker' \
   'fasd'
 
-zstyle ':prezto:module:prompt' theme 'kylewest'
+zstyle ':prezto:module:prompt' theme 'sorin'
