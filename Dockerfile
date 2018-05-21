@@ -9,7 +9,8 @@ RUN apt-get update
 RUN apt-get install -y \
   software-properties-common \
   git \
-  wget
+  wget \
+  locales
 
 ## gui stuff
 RUN apt-get install -y \
@@ -32,8 +33,9 @@ RUN apt-get install -y vim && \
   sh ~/.vim_runtime/install_awesome_vimrc.sh
 
 # language
-RUN echo 'export LC_ALL=en_US.UTF-8' >> /root/.zshrc && \
-  echo 'export LANG=en_US.UTF-8' >> /root/.zshrc
+RUN echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen &&\
+  locale-gen en_US.utf8 &&\
+  /usr/sbin/update-locale LANG=en_US.UTF-8
 
 # docker
 RUN apt-get install -y apt-transport-https ca-certificates curl gnupg2 && \
@@ -60,7 +62,7 @@ RUN apt-get install -y openssh-server xauth && \
   grep "^X11UseLocalhost" /etc/ssh/sshd_config || echo "X11UseLocalhost no" >> /etc/ssh/sshd_
 
 # copy dotfiles
-ADD home /root/
+ADD home /root
 
 EXPOSE 22
 ENTRYPOINT $(service ssh restart >> /dev/null) && zsh
