@@ -14,5 +14,4 @@ zstyle ':prezto:load' pmodule \
   'docker' \
   'fasd'
 
-zstyle ':prezto:module:prompt' theme 'kylewest'
-zstyle ':prezto:module:tmux:auto-start' local 'yes'
+zstyle ':prezto:module:prompt' theme 'sorin'
