@@ -59,5 +59,8 @@ RUN apt-get install -y openssh-server xauth && \
   sed -i "s/^.*PermitRootLogin.*$/PermitRootLogin yes/" /etc/ssh/sshd_config && \
   grep "^X11UseLocalhost" /etc/ssh/sshd_config || echo "X11UseLocalhost no" >> /etc/ssh/sshd_
 
+# copy dotfiles
+ADD home /root/
+
 EXPOSE 22
-ENTRYPOINT service ssh restart && zsh
+ENTRYPOINT $(service ssh restart >> /dev/null) && zsh
