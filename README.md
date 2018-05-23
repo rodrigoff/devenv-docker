@@ -51,5 +51,5 @@ docker run --rm -it --volumes-from ssh-agent -v ~/.ssh:/.ssh rodrigoff/ssh-agent
 
 3. Mount the ssh-agent socket in the desired containers
 ```
-docker run -it --volumes-from=ssh-agent -e SSH_AUTH_SOCK=/.ssh-agent/socket ubuntu:latest /bin/bash
+docker run -it --rm -v <your repos folder>:/workspace -e GIT_DISCOVERY_ACROSS_FILESYSTEM=true --volumes-from=ssh-agent -e SSH_AUTH_SOCK=/.ssh-agent/socket -v //var/run/docker.sock:/var/run/docker.sock -h devenv -p 22:22 rodrigoff/devenv
 ```
