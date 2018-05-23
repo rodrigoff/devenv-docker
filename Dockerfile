@@ -12,11 +12,25 @@ RUN apt-get install -y \
   wget \
   locales
 
+# language
+RUN echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen &&\
+  locale-gen en_US.utf8 &&\
+  /usr/sbin/update-locale LANG=en_US.UTF-8
+
 ## gui stuff
 RUN apt-get install -y \
   libfreetype6 \
   libxrender1 \
   libxtst6
+
+# ssh x11 forwarding
+RUN apt-get install -y openssh-server xauth && \
+  mkdir /var/run/sshd && \
+  sed -i "s/^.*PasswordAuthentication.*$/PasswordAuthentication no/" /etc/ssh/sshd_config && \
+  sed -i "s/^.*X11Forwarding.*$/X11Forwarding yes/" /etc/ssh/sshd_config && \
+  sed -i "s/^.*X11UseLocalhost.*$/X11UseLocalhost no/" /etc/ssh/sshd_config && \
+  sed -i "s/^.*PermitRootLogin.*$/PermitRootLogin yes/" /etc/ssh/sshd_config && \
+  grep "^X11UseLocalhost" /etc/ssh/sshd_config || echo "X11UseLocalhost no" >> /etc/ssh/sshd_
 
 # zsh + prezto
 RUN apt-get install -y zsh && \
@@ -32,11 +46,6 @@ RUN apt-get install -y vim && \
   git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime && \
   sh ~/.vim_runtime/install_awesome_vimrc.sh
 
-# language
-RUN echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen &&\
-  locale-gen en_US.utf8 &&\
-  /usr/sbin/update-locale LANG=en_US.UTF-8
-
 # docker
 RUN apt-get install -y apt-transport-https ca-certificates curl gnupg2 && \
   curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
@@ -51,15 +60,6 @@ RUN apt-get install -y apt-transport-https ca-certificates curl gnupg2 && \
 RUN useradd user && usermod -aG sudo user
 RUN mkdir /home/user && chown -R user /home/user
 RUN echo 'user ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers
-
-# ssh x11 forwarding
-RUN apt-get install -y openssh-server xauth && \
-  mkdir /var/run/sshd && \
-  sed -i "s/^.*PasswordAuthentication.*$/PasswordAuthentication no/" /etc/ssh/sshd_config && \
-  sed -i "s/^.*X11Forwarding.*$/X11Forwarding yes/" /etc/ssh/sshd_config && \
-  sed -i "s/^.*X11UseLocalhost.*$/X11UseLocalhost no/" /etc/ssh/sshd_config && \
-  sed -i "s/^.*PermitRootLogin.*$/PermitRootLogin yes/" /etc/ssh/sshd_config && \
-  grep "^X11UseLocalhost" /etc/ssh/sshd_config || echo "X11UseLocalhost no" >> /etc/ssh/sshd_
 
 # copy dotfiles
 ADD home /root
