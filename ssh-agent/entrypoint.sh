@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Print a debug message if debug mode is on ($DEBUG is not empty)
 # @param message
 debug_msg ()
