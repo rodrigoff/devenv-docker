@@ -9,6 +9,7 @@ RUN apt-get update
 RUN apt-get install -y \
   software-properties-common \
   git \
+  python2.7 \
   wget \
   locales
 
@@ -42,7 +43,7 @@ RUN zsh -c 'setopt EXTENDED_GLOB; \
   done' 
 
 # vim + vimrc
-RUN apt-get install -y vim && \
+RUN apt-get install -y vim-nox && \
   git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime && \
   sh ~/.vim_runtime/install_awesome_vimrc.sh
 
