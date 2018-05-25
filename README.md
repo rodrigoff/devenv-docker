@@ -6,7 +6,7 @@ The base image is based on `debian:stretch-slim` and contains the following:
 - [git](https://git-scm.com/)
 - [zsh](http://www.zsh.org/)
 - [prezto](https://github.com/sorin-ionescu/prezto)
-- [vim](https://www.vim.org/)
+- [vim](https://www.vim.org/) - Built from source with python2.7 to work with the [ominsharp-vim](https://github.com/OmniSharp/omnisharp-vim) plugin in another image (only until [this issue](https://github.com/OmniSharp/omnisharp-vim/pull/316) is resolved).
 - [the ultimate vimrc](https://github.com/amix/vimrc)
 - [docker](https://www.docker.com/)
 - [X11 forwarding over SSH](https://unix.stackexchange.com/questions/12755/how-to-forward-x-over-ssh-to-run-graphics-applications-remotely)
