@@ -24,7 +24,7 @@ RUN git clone git://github.com/vim/vim && \
 
 FROM debian:stretch-slim
 
-COPY --from=builder /usr/local/bin/vim/ /usr/local/bin/vim/
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
 COPY --from=builder /usr/local/share/vim/ /usr/local/share/vim/
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -44,7 +44,7 @@ RUN echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen &&\
   locale-gen en_US.utf8 &&\
   /usr/sbin/update-locale LANG=en_US.UTF-8
 
-## gui stuff
+# gui stuff
 RUN apt-get install -y \
   libfreetype6 \
   libsm6 \
