@@ -83,7 +83,9 @@ RUN apt-get install -y apt-transport-https ca-certificates curl gnupg2 && \
   $(lsb_release -cs) \
   stable" && \
   apt-get update && \
-  apt-get install -y docker-ce
+  apt-get install -y docker-ce && \
+  curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+
 
 # user for apps that don't support root
 RUN useradd user && usermod -aG sudo user
