@@ -1,4 +1,4 @@
-FROM rodrigoff/devenv:dotnet-builder
+FROM rodrigoff/devenv
 
 # dotnet
 RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.asc.gpg && \
