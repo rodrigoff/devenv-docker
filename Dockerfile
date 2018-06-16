@@ -1,4 +1,31 @@
+FROM debian:stretch-slim as builder
+
+WORKDIR /tmp
+
+RUN apt-get update
+
+# Install dependencies
+RUN apt-get install -y \
+  build-essential \
+  libncurses5-dev libx11-dev libxpm-dev libxt-dev python-dev \
+  git
+
+# Build vim from git source
+RUN git clone git://github.com/vim/vim && \
+  cd vim && \
+  ./configure \
+    --disable-gui \
+    --disable-netbeans \
+    --enable-multibyte \
+    --enable-pythoninterp \
+    --with-features=normal \
+    --with-python-config-dir=/usr/lib/python2.7/config && \
+  make install
+
 FROM debian:stretch-slim
+
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
+COPY --from=builder /usr/local/share/vim/ /usr/local/share/vim/
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm-256color
@@ -9,7 +36,6 @@ RUN apt-get update
 RUN apt-get install -y \
   software-properties-common \
   git \
-  python2.7 \
   wget \
   locales
 
@@ -18,11 +44,13 @@ RUN echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen &&\
   locale-gen en_US.utf8 &&\
   /usr/sbin/update-locale LANG=en_US.UTF-8
 
-## gui stuff
+# gui stuff
 RUN apt-get install -y \
   libfreetype6 \
+  libsm6 \
   libxrender1 \
-  libxtst6
+  libxt6 \
+  libxtst6 
 
 # ssh x11 forwarding
 RUN apt-get install -y openssh-server xauth && \
@@ -43,9 +71,9 @@ RUN zsh -c 'setopt EXTENDED_GLOB; \
   done' 
 
 # vim + vimrc
-RUN apt-get install -y vim-nox && \
-  git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime && \
-  sh ~/.vim_runtime/install_awesome_vimrc.sh
+RUN git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime && \
+  sh ~/.vim_runtime/install_awesome_vimrc.sh && \
+  touch ~/.vim_runtime/my_configs
 
 # docker
 RUN apt-get install -y apt-transport-https ca-certificates curl gnupg2 && \
@@ -55,7 +83,9 @@ RUN apt-get install -y apt-transport-https ca-certificates curl gnupg2 && \
   $(lsb_release -cs) \
   stable" && \
   apt-get update && \
-  apt-get install -y docker-ce
+  apt-get install -y docker-ce && \
+  curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+
 
 # user for apps that don't support root
 RUN useradd user && usermod -aG sudo user
