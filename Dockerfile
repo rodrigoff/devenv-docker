@@ -37,7 +37,8 @@ RUN apt-get install -y \
   software-properties-common \
   git \
   wget \
-  locales
+  locales \
+  tmux
 
 # language
 RUN echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen &&\
@@ -63,12 +64,17 @@ RUN apt-get install -y openssh-server xauth && \
 
 # zsh + prezto
 RUN apt-get install -y zsh && \
-  git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+  git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto" && \
+  chsh -s /bin/zsh
 
 RUN zsh -c 'setopt EXTENDED_GLOB; \
   for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do \
     ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"; \
   done' 
+
+# tmux + tpm
+RUN apt-get install -y tmux && \
+  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 # vim + vimrc
 RUN git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime && \
@@ -85,7 +91,6 @@ RUN apt-get install -y apt-transport-https ca-certificates curl gnupg2 && \
   apt-get update && \
   apt-get install -y docker-ce && \
   curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-
 
 # user for apps that don't support root
 RUN useradd user && usermod -aG sudo user

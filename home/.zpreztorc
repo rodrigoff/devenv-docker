@@ -12,6 +12,8 @@ zstyle ':prezto:load' pmodule \
   'history-substring-search' \
   'prompt' \
   'docker' \
-  'fasd'
+  'fasd' \
+  'tmux'
 
 zstyle ':prezto:module:prompt' theme 'sorin'
+zstyle ':prezto:module:tmux:auto-start' local 'yes'
