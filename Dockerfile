@@ -70,7 +70,8 @@ RUN apt-get install -y zsh && \
 RUN zsh -c 'setopt EXTENDED_GLOB; \
   for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do \
     ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"; \
-  done' 
+  done; \
+  unsetopt EXTENDED_GLOB' 
 
 # tmux + tpm
 RUN apt-get install -y tmux && \
@@ -92,6 +93,10 @@ RUN apt-get install -y apt-transport-https ca-certificates curl gnupg2 && \
   apt-get install -y docker-ce && \
   curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose && \
   chmod +x /usr/local/bin/docker-compose
+
+# docker completions
+RUN curl -fLo ~/.zprezto/modules/completion/external/src/_docker https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker && \
+  curl -fLo ~/.zprezto/modules/completion/external/src/_docker-compose https://raw.githubusercontent.com/docker/compose/master/contrib/completion/zsh/_docker-compose
 
 # user for apps that don't support root
 RUN useradd user && usermod -aG sudo user
