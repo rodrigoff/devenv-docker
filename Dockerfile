@@ -10,8 +10,7 @@ RUN apt-get install -y \
   software-properties-common \
   git \
   wget \
-  locales \
-  tmux
+  locales 
 
 # language
 RUN echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen &&\
