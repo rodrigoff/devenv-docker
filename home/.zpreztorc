@@ -16,4 +16,4 @@ zstyle ':prezto:load' pmodule \
   'tmux'
 
 zstyle ':prezto:module:prompt' theme 'sorin'
-zstyle ':prezto:module:tmux:auto-start' remote 'yes'
+zstyle ':prezto:module:tmux:auto-start' local 'yes'
