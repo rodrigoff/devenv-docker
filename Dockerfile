@@ -43,7 +43,14 @@ RUN zsh -c 'setopt EXTENDED_GLOB; \
   for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do \
     ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"; \
   done; \
-  unsetopt EXTENDED_GLOB' 
+  unsetopt EXTENDED_GLOB'
+
+## prezto-contrib
+RUN cd ${ZDOTDIR:-$HOME}/.zprezto && \
+  git clone https://github.com/belak/prezto-contrib contrib && \
+  cd contrib && \
+  git submodule init && \
+  git submodule update
 
 # tmux + tpm
 RUN apt-get install -y tmux && \
