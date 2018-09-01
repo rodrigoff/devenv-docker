@@ -1,31 +1,4 @@
-FROM debian:stretch-slim as builder
-
-WORKDIR /tmp
-
-RUN apt-get update
-
-# Install dependencies
-RUN apt-get install -y \
-  build-essential \
-  libncurses5-dev libx11-dev libxpm-dev libxt-dev python-dev \
-  git
-
-# Build vim from git source
-RUN git clone git://github.com/vim/vim && \
-  cd vim && \
-  ./configure \
-    --disable-gui \
-    --disable-netbeans \
-    --enable-multibyte \
-    --enable-pythoninterp \
-    --with-features=normal \
-    --with-python-config-dir=/usr/lib/python2.7/config && \
-  make install
-
 FROM debian:stretch-slim
-
-COPY --from=builder /usr/local/bin/ /usr/local/bin/
-COPY --from=builder /usr/local/share/vim/ /usr/local/share/vim/
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm-256color
@@ -78,7 +51,8 @@ RUN apt-get install -y tmux && \
   git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 # vim + vimrc
-RUN git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime && \
+RUN apt-get install -y vim-nox && \
+  git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime && \
   sh ~/.vim_runtime/install_awesome_vimrc.sh && \
   touch ~/.vim_runtime/my_configs
 
